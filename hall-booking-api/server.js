@@ -7,12 +7,12 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
 //App endpoints
-app.get("/rooms", listRooms);
+app.get("/", listRooms);
 app.post("/create-room", createRoom);
 app.post("/booking", booking);
 app.get("/rooms-bookings", listroomsWithBookings);
-app.get("/customer-history", customerHistory);
 app.get("/booked-customers", bookedCustomers);
+app.get("/customer-history", customerHistory);
 
 const rooms = [
     {
@@ -44,6 +44,26 @@ const bookings = [
         bookingId: 1,
         bookingDate: "2024-01-05",
         bookingStatus: "Confirmed"
+    },
+    {
+        customerName: "Test1",
+        roomId: 1,
+        date: "01-05-2010",
+        startTime: "04:00 PM",
+        endTime: "05:00 PM",
+        bookingId: 1,
+        bookingDate: "2024-01-05",
+        bookingStatus: "Confirmed"
+    },
+    {
+        customerName: "Test3",
+        roomId: 2,
+        date: "01-05-2010",
+        startTime: "04:00 PM",
+        endTime: "05:00 PM",
+        bookingId: 1,
+        bookingDate: "2024-01-05",
+        bookingStatus: "Confirmed"
     }
 ];
 
@@ -66,7 +86,7 @@ function createRoom(req, res) {
         pricePerHour,
     }
     rooms.push(room);
-    res.json({ message: "Room added successfully", room_details : room });
+    res.json({ message: "Room added successfully", room_details: room });
 };
 
 //function to book a room
@@ -112,20 +132,22 @@ function listroomsWithBookings(req, res) {
             })),
         };
     });
-    res.send(roomsWithBookings[1]);
+    res.send(roomsWithBookings);
 };
 
 //Function for retrive list all customer with bookings
 function bookedCustomers(req, res) {
-    const customersWithBookings = bookings.map((booking) => ({
-        customerName: booking.customerName,
-        roomId: booking.roomId,
-        date: booking.date,
-        startTime: booking.startTime,
-        endTime: booking.endTime,
-        bookingStatus: booking.bookingStatus,
-    }));
-    res.json(customersWithBookings);
+    const customersBookings = bookings.map((booking) => {
+        return {
+            customerName: booking.customerName,
+            roomId: booking.roomId,
+            date: booking.date,
+            startTime: booking.startTime,
+            endTime: booking.endTime,
+            bookingStatus: booking.bookingStatus,
+        }
+    });
+    res.json(customersBookings);
 };
 
 //Function for retrive customer history
@@ -143,5 +165,5 @@ function customerHistory(req, res) {
     }
 };
 app.listen(PORT, () => {
-    console.log(`Listening a http://locahost:${PORT}`);
+    console.log(`Listening on port : ${PORT}`);
 });
