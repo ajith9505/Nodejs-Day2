@@ -57,7 +57,7 @@ function createRoom(req, res) {
     const { seats, amenities, pricePerHour } = req.body;
 
 
-    const roomId = rooms.length+1
+    const roomId = rooms.length + 1
     //Add the room in the list
     const room = {
         roomId,
@@ -66,28 +66,23 @@ function createRoom(req, res) {
         pricePerHour,
     }
     rooms.push(room);
-    res.json({ message: room });
+    res.json({ message: "Room added successfully", room_details : room });
 };
 
 //function to book a room
 function booking(req, res) {
     const { roomId, customerName, date, startTime, endTime } = req.body;
-
-    //check if the room exists
     const room = rooms.find((room) => room.roomId === roomId);
     if (!room) {
         return res.status(400).json({ message: 'Room not Available' })
     }
-
-    //check if the room is available for booking
-    const booking=bookings.find((booking) => booking.roomId === roomId && booking.date === date && booking.startTime === startTime );
+    const booking = bookings.find((booking) => booking.roomId === roomId && booking.date === date && booking.startTime === startTime);
     if (booking) {
         return res.status(400).json({ message: 'Room is not available for specified time' });
     }
-    //Generate a unique bookingId
+
     const bookingId = bookings.length + 1;
 
-    //Add the booking to the list
     const bookingData = {
         customerName,
         roomId,
@@ -99,10 +94,10 @@ function booking(req, res) {
         bookingStatus: 'Confirmed',
     }
     bookings.push(bookingData);
-    res.json({ message: bookingData });
+    res.json({ message: "Room Booked successFully", Details: bookingData });
 };
 
-//Function for list all rooms with bookings
+//Function for retrive list all rooms with bookings
 function listroomsWithBookings(req, res) {
     const roomsWithBookings = rooms.map((room) => {
         const roomBookings = bookings.filter((booking) => booking.roomId === room.roomId);
@@ -120,7 +115,7 @@ function listroomsWithBookings(req, res) {
     res.send(roomsWithBookings[1]);
 };
 
-//Function for list all customer with bookings
+//Function for retrive list all customer with bookings
 function bookedCustomers(req, res) {
     const customersWithBookings = bookings.map((booking) => ({
         customerName: booking.customerName,
@@ -133,14 +128,20 @@ function bookedCustomers(req, res) {
     res.json(customersWithBookings);
 };
 
-//Function for customer history
+//Function for retrive customer history
 function customerHistory(req, res) {
-    const customerName = req.query.name;
+    try {
+        const customerName = req.query.name;
 
-        const customerHistory =bookings.filter((booking) => booking.customerName === customerName);
+        console.log(customerName)
 
-    res.json(customerHistory);
+        const customerHistory = bookings.filter((booking) => booking.customerName === customerName);
+
+        res.json(customerHistory);
+    } catch (error) {
+        console.log(error);
+    }
 };
 app.listen(PORT, () => {
-    console.log(`Hall Booking Api listening a http://locahost:${PORT}`);
+    console.log(`Listening a http://locahost:${PORT}`);
 });
