@@ -11,7 +11,7 @@ A simple hall booking api was created using Nodejs. This API can creating the ne
 - /booking
 - /booked-customers
 - /rooms-bookings
-- /customer-history?name=Test
+- /customer-history?name=Test3
 
 ## Technology used:
 
